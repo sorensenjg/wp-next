@@ -1,5 +1,5 @@
-=== Plugin Name ===
-Contributors: (this should be a list of wordpress.org userid's)
+=== WP Next ===
+Contributors: sorensenjg
 Donate link: https://sorensenjg.com
 Tags: comments, spam
 Requires at least: 3.0.1
@@ -8,7 +8,9 @@ Stable tag: 4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Here is a short description of the plugin.  This should be no more than 150 characters.  No markup here.
+WPNext is a free open-source WordPress plugin that optimizes your WordPress site to work as a data source for Next.
+
+https://github.com/gatsbyjs/wp-gatsby
 
 == Description ==
 
