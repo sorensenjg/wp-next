@@ -9,8 +9,8 @@
  * @link       https://sorensenjg.com
  * @since      1.0.0
  *
- * @package    WP_Next
- * @subpackage WP_Next/includes
+ * @package    Wp_Next
+ * @subpackage Wp_Next/includes
  */
 
 /**
@@ -23,11 +23,11 @@
  * version of the plugin.
  *
  * @since      1.0.0
- * @package    WP_Next
- * @subpackage WP_Next/includes
+ * @package    Wp_Next
+ * @subpackage Wp_Next/includes
  * @author     Justin Sorensen <hey@sorensenjg.com>
  */
-class WP_Next {
+class Wp_Next {
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -35,7 +35,7 @@ class WP_Next {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      WP_Next_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var      Wp_Next_Loader    $loader    Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -86,10 +86,10 @@ class WP_Next {
 	 *
 	 * Include the following files that make up the plugin:
 	 *
-	 * - WP_Next_Loader. Orchestrates the hooks of the plugin.
-	 * - WP_Next_i18n. Defines internationalization functionality.
-	 * - WP_Next_Admin. Defines all hooks for the admin area.
-	 * - WP_Next_Public. Defines all hooks for the public side of the site.
+	 * - Wp_Next_Loader. Orchestrates the hooks of the plugin.
+	 * - Wp_Next_i18n. Defines internationalization functionality.
+	 * - Wp_Next_Admin. Defines all hooks for the admin area.
+	 * - Wp_Next_Public. Defines all hooks for the public side of the site.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
@@ -122,6 +122,8 @@ class WP_Next {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-wp-next-public.php';
 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-wp-next-api.php';
+
 		$this->loader = new WP_Next_Loader();
 
 	}
@@ -129,7 +131,7 @@ class WP_Next {
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the WP_Next_i18n class in order to set the domain and to register the hook
+	 * Uses the Wp_Next_i18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @since    1.0.0
@@ -169,9 +171,11 @@ class WP_Next {
 	private function define_public_hooks() {
 
 		$plugin_public = new WP_Next_Public( $this->get_plugin_name(), $this->get_version() );
+		$plugin_api = new WP_Next_Api( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		$this->loader->add_action( 'rest_api_init', $plugin_api, 'register_routes' );
 
 	}
 
@@ -199,7 +203,7 @@ class WP_Next {
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since     1.0.0
-	 * @return    WP_Next_Loader    Orchestrates the hooks of the plugin.
+	 * @return    Wp_Next_Loader    Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader() {
 		return $this->loader;

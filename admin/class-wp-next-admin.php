@@ -20,7 +20,7 @@
  * @subpackage WP_Next/admin
  * @author     Justin Sorensen <hey@sorensenjg.com>
  */
-class WP_Next_Admin {
+class WP_Next_Admin { 
 
 	/**
 	 * The ID of this plugin.
@@ -52,7 +52,9 @@ class WP_Next_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
-	}
+		add_action( 'admin_menu', [ $this, 'init_menu' ] );
+		
+	} 
 
 	/**
 	 * Register the stylesheets for the admin area.
@@ -73,7 +75,7 @@ class WP_Next_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/wp-next-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'dist/index.css', array(), $this->version, 'all' );
 
 	}
 
@@ -95,9 +97,59 @@ class WP_Next_Admin {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
+		
+		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'dist/index.js', [ 'wp-element' ], $this->version, true );
+		
+		wp_localize_script( $this->plugin_name, 'wpNext', [
+			'nonce' 		=> wp_create_nonce( 'wp_rest' ),
+			'version' 		=> $this->version, 
+			'rootApiUrl' 	=> esc_url_raw( rest_url() ),
+			'nextApiUrl' 	=> esc_url_raw( rest_url( $this->plugin_name . '/v1' ) ), 
+			// 'basicAuth' => defined( 'WP_NEXT_BASIC_AUTH' ) ? WP_NEXT_BASIC_AUTH : null,
+		] ); 
+		
+		wp_enqueue_script( $this->plugin_name ); 
+		// wp_add_inline_script( $this->plugin_name, '', 'before' );
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wp-next-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'dist/index.js.map', [], $this->version, true );
 
+	}
+
+	public function init_menu() { 
+		add_menu_page( 
+			__( 'WP Next', $this->plugin_name ), 
+			__( 'WP Next', $this->plugin_name ), 
+			'manage_options', 
+			$this->plugin_name, 
+			[ $this, 'index_page_callback' ], 
+			'dashicons-admin-settings',  
+			// plugins_url( 'myplugin/images/icon.png' ),
+		);
+
+		// add_submenu_page(
+		// 	$this->plugin_name,
+		// 	__( 'WP Next Settings', $this->plugin_name ),
+		// 	__( 'Settings', $this->plugin_name ),
+		// 	'manage_options',
+		// 	$this->plugin_name . '-settings',
+		// 	[ $this, 'settings_page_callback' ], 
+		// );
+	}
+
+	public function index_page_callback() { 
+		?>
+		<div id="wp-next">
+			<p><?php _e( 'Loading...', $this->plugin_name ); ?></p>
+		</div>
+		<?php
+	}
+
+	public function settings_page_callback() { 
+		?>
+		<div id="wp-next--settings">
+			<p><?php _e( 'Loading...', $this->plugin_name ); ?></p>
+		</div>
+		<?php
 	}
 
 }
